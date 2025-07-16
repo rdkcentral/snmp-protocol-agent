@@ -18,9 +18,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
-      - name: Make run_ut.sh executable
-        run: chmod +x source/test/run_ut.sh
 
       - name: Run unit tests
         run: sh -c source/test/run_ut.sh

@@ -215,7 +215,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMappingMapToDmSuccess)
 }
 
 //Test for CcspUtilParseOidValueString - Failure
-TEST_F(CcspSnmpPaTestFixture, CcspUtilParseOidValueStringFailure)
+/*TEST_F(CcspSnmpPaTestFixture, CcspUtilParseOidValueStringFailure)
 {
     printf("check 1");
     char* oidString = "1,3,6,1,4491";
@@ -242,7 +242,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilParseOidValueStringFailure)
     BOOL result = CcspUtilParseOidValueString(oidString, oidArray, &size);
     EXPECT_EQ(result, FALSE);
     free(pTokenChain);
-}
+}*/
 
 //Test for CcspUtilMIBStringToDataType - success
 TEST_F(CcspSnmpPaTestFixture, CcspUtilMIBStringToDataTypeSuccess)

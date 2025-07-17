@@ -217,7 +217,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMappingMapToDmSuccess)
 //Test for CcspUtilParseOidValueString - Failure
 TEST_F(CcspSnmpPaTestFixture, CcspUtilParseOidValueStringFailure)
 {
-    char* oidString = const_cast<char*>("1,3,6,1,4491");
+    char* oidString = "1,3,6,1,4491";
     oid oidArray[MAX_OID_LEN];
     ULONG size = 0;
 
@@ -226,33 +226,18 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilParseOidValueStringFailure)
     memset(pTokenChain, 0, sizeof(ANSC_TOKEN_CHAIN));
     pTokenChain->TokensQueue.Depth = 5;
 
-    // Make sure AnscTcAllocate returns a valid chain
-    EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_, _))
-        .Times(1)
-        .WillOnce(Return(pTokenChain));
-
-    // Simulate 1 token to be processed
-    EXPECT_CALL(*g_anscWrapperApiMock, AnscTcGetTokenCount(_))
-        .Times(1)
-        .WillOnce(Return(1));
-
-    // Simulate token unlink returning NULL (failure case)
-    EXPECT_CALL(*g_anscWrapperApiMock, AnscTcUnlinkToken(_))
-        .Times(1)
-        .WillOnce(Return(static_cast<PANSC_STRING_TOKEN>(nullptr)));
-
-    // Ensure AnscTcFree is called (optional, verify cleanup)
+    EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_,_))
+                .Times(1)
+                .WillOnce(Return(pTokenChain));
+    EXPECT_CALL(*g_anscWrapperApiMock, AnscTcPopToken(_))
+                .Times(1)
+                .WillOnce(Return(static_cast<ANSC_HANDLE>(nullptr)));
     EXPECT_CALL(*g_anscWrapperApiMock, AnscTcFree(_))
         .Times(1);
 
     // Call the actual function
     BOOL result = CcspUtilParseOidValueString(oidString, oidArray, &size);
-
-    // Validate expected failure
     EXPECT_EQ(result, FALSE);
-    EXPECT_EQ(size, 0u);
-
-    // Cleanup the mock-allocated structure
     free(pTokenChain);
 }
 

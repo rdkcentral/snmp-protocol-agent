@@ -217,15 +217,18 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMappingMapToDmSuccess)
 //Test for CcspUtilParseOidValueString - Failure
 TEST_F(CcspSnmpPaTestFixture, CcspUtilParseOidValueStringFailure)
 {
+    printf("check 1");
     char* oidString = "1,3,6,1,4491";
     oid oidArray[MAX_OID_LEN];
     ULONG size = 0;
 
     // Create a fake token chain (dummy content, not used directly)
+    printf("check 2");
     PANSC_TOKEN_CHAIN pTokenChain = (PANSC_TOKEN_CHAIN)malloc(sizeof(ANSC_TOKEN_CHAIN));
     memset(pTokenChain, 0, sizeof(ANSC_TOKEN_CHAIN));
     pTokenChain->TokensQueue.Depth = 5;
 
+    printf("check 3");
     EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_,_))
                 .Times(1)
                 .WillOnce(Return(pTokenChain));
@@ -234,7 +237,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilParseOidValueStringFailure)
                 .WillOnce(Return(static_cast<ANSC_HANDLE>(nullptr)));
     EXPECT_CALL(*g_anscWrapperApiMock, AnscTcFree(_))
         .Times(1);
-
+    printf("check 4");
     // Call the actual function
     BOOL result = CcspUtilParseOidValueString(oidString, oidArray, &size);
     EXPECT_EQ(result, FALSE);

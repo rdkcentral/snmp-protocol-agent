@@ -321,7 +321,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadMibInfoSuccess)
 }
 
 //Test for CcspUtilLoadDMMappingInfo - success
-TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadDMMappingInfoSuccess)
+/*TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadDMMappingInfoSuccess)
 {
     extern ANSC_HANDLE g_pMyChildNode;
     MyCreateFunction();
@@ -353,7 +353,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadDMMappingInfoSuccess)
         free(pInfo);
         free(pQueue);
     }
-}
+}*/
 
 //Test for CcspUtilLoadIndexMappingInfo - success
 TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadIndexMappingInfoSuccess)

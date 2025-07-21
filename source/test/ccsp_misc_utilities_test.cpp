@@ -323,19 +323,23 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadMibInfoSuccess)
 //Test for CcspUtilLoadDMMappingInfo - success
 TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadDMMappingInfoSuccess)
 {
+    printf("Debug 1");
     extern ANSC_HANDLE g_pMyChildNode;
     MyCreateFunction();
 
     if(g_pMyChildNode != NULL)
     {
+        printf("Debug 2");
         PCCSP_DM_MAPPING_INFO pInfo = (PCCSP_DM_MAPPING_INFO)malloc(sizeof(CCSP_DM_MAPPING_INFO));
         PQUEUE_HEADER pQueue = (PQUEUE_HEADER)malloc(sizeof(QUEUE_HEADER));
         PANSC_XML_DOM_NODE_OBJECT pNode = (PANSC_XML_DOM_NODE_OBJECT)g_pMyChildNode;
-    
+
+        printf("Debug 3");
         PANSC_TOKEN_CHAIN pTokenChain = (PANSC_TOKEN_CHAIN)malloc(sizeof(ANSC_TOKEN_CHAIN));
         memset(pTokenChain, 0, sizeof(ANSC_TOKEN_CHAIN));
         pTokenChain->TokensQueue.Depth = 1;
 
+        printf("Debug 4");
         EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_,_))
                     .Times(1)
                     .WillOnce(Return(pTokenChain));
@@ -344,11 +348,13 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadDMMappingInfoSuccess)
                     .Times(1)
                     .WillOnce(DoAll(SetArgPointee<3>(0), Return(0)));
 
+        printf("Debug 5");
         CcspUtilLoadDMMappingInfo(pInfo, pQueue, pNode);
 
+        printf("Debug 6");
         free(g_pMyChildNode);
         g_pMyChildNode = NULL;
-    
+    printf("Debug ")7;
         free(pTokenChain);
         free(pInfo);
         free(pQueue);

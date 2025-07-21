@@ -354,7 +354,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadDMMappingInfoSuccess)
         printf("Debug 6");
         free(g_pMyChildNode);
         g_pMyChildNode = NULL;
-    printf("Debug ")7;
+    printf("Debug 7");
         free(pTokenChain);
         free(pInfo);
         free(pQueue);

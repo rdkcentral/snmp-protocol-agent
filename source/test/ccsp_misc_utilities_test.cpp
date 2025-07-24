@@ -221,17 +221,17 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilParseOidValueStringFailure)
     oid oidArray[MAX_OID_LEN];
     ULONG size = 0;
 
-    PANSC_TOKEN_CHAIN pTokenChain = (PANSC_TOKEN_CHAIN)malloc(sizeof(ANSC_TOKEN_CHAIN));
-    memset(pTokenChain, 0, sizeof(ANSC_TOKEN_CHAIN));
-    pTokenChain->TokensQueue.Depth = 5;
-
+    // Create a fake token chain (dummy content, not used directly)
+    PANSC_TOKEN_CHAIN pTokenChain = NULL;
+    
     EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_,_))
                 .Times(1)
                 .WillOnce(Return(pTokenChain));
     EXPECT_CALL(*g_anscWrapperApiMock, AnscTcPopToken(_))
                 .Times(1)
                 .WillOnce(Return(static_cast<ANSC_HANDLE>(nullptr)));
-
+    
+    // Call the actual function
     BOOL result = CcspUtilParseOidValueString(oidString, oidArray, &size);
     EXPECT_EQ(result, FALSE);
     free(pTokenChain);
@@ -324,10 +324,8 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadDMMappingInfoSuccess)
         PCCSP_DM_MAPPING_INFO pInfo = (PCCSP_DM_MAPPING_INFO)malloc(sizeof(CCSP_DM_MAPPING_INFO));
         PQUEUE_HEADER pQueue = (PQUEUE_HEADER)malloc(sizeof(QUEUE_HEADER));
         PANSC_XML_DOM_NODE_OBJECT pNode = (PANSC_XML_DOM_NODE_OBJECT)g_pMyChildNode;
-    
-        PANSC_TOKEN_CHAIN pTokenChain = (PANSC_TOKEN_CHAIN)malloc(sizeof(ANSC_TOKEN_CHAIN));
-        memset(pTokenChain, 0, sizeof(ANSC_TOKEN_CHAIN));
-        pTokenChain->TokensQueue.Depth = 1;
+        
+        PANSC_TOKEN_CHAIN pTokenChain = NULL;
 
         EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_,_))
                     .Times(1)
@@ -341,7 +339,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadDMMappingInfoSuccess)
 
         free(g_pMyChildNode);
         g_pMyChildNode = NULL;
-    
+        
         free(pTokenChain);
         free(pInfo);
         free(pQueue);
@@ -384,9 +382,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadMibMappingInfoSuccess)
     {
         PANSC_XML_DOM_NODE_OBJECT pNode = (PANSC_XML_DOM_NODE_OBJECT)g_pMyChildNode;
     
-        PANSC_TOKEN_CHAIN pTokenChain = (PANSC_TOKEN_CHAIN)malloc(sizeof(ANSC_TOKEN_CHAIN));
-        memset(pTokenChain, 0, sizeof(ANSC_TOKEN_CHAIN));
-        pTokenChain->TokensQueue.Depth = 1;
+        PANSC_TOKEN_CHAIN pTokenChain = NULL;
 
         EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_,_))
                     .Times(1)

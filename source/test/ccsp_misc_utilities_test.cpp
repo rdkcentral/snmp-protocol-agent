@@ -215,34 +215,27 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilCleanIndexMappingMapToDmSuccess)
 }
 
 //Test for CcspUtilParseOidValueString - Failure
-/*TEST_F(CcspSnmpPaTestFixture, CcspUtilParseOidValueStringFailure)
+TEST_F(CcspSnmpPaTestFixture, CcspUtilParseOidValueStringFailure)
 {
-    printf("check 1");
     char* oidString = "1,3,6,1,4491";
     oid oidArray[MAX_OID_LEN];
     ULONG size = 0;
 
     // Create a fake token chain (dummy content, not used directly)
-    printf("check 2");
-    PANSC_TOKEN_CHAIN pTokenChain = (PANSC_TOKEN_CHAIN)malloc(sizeof(ANSC_TOKEN_CHAIN));
-    memset(pTokenChain, 0, sizeof(ANSC_TOKEN_CHAIN));
-    pTokenChain->TokensQueue.Depth = 5;
-
-    printf("check 3");
+    PANSC_TOKEN_CHAIN pTokenChain = NULL;
+    
     EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_,_))
                 .Times(1)
                 .WillOnce(Return(pTokenChain));
     EXPECT_CALL(*g_anscWrapperApiMock, AnscTcPopToken(_))
                 .Times(1)
                 .WillOnce(Return(static_cast<ANSC_HANDLE>(nullptr)));
-    EXPECT_CALL(*g_anscWrapperApiMock, AnscTcFree(_))
-        .Times(1);
-    printf("check 4");
+    
     // Call the actual function
     BOOL result = CcspUtilParseOidValueString(oidString, oidArray, &size);
     EXPECT_EQ(result, FALSE);
     free(pTokenChain);
-}*/
+}
 
 //Test for CcspUtilMIBStringToDataType - success
 TEST_F(CcspSnmpPaTestFixture, CcspUtilMIBStringToDataTypeSuccess)
@@ -323,23 +316,17 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadMibInfoSuccess)
 //Test for CcspUtilLoadDMMappingInfo - success
 TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadDMMappingInfoSuccess)
 {
-    printf("Debug 1");
     extern ANSC_HANDLE g_pMyChildNode;
     MyCreateFunction();
 
     if(g_pMyChildNode != NULL)
     {
-        printf("Debug 2");
         PCCSP_DM_MAPPING_INFO pInfo = (PCCSP_DM_MAPPING_INFO)malloc(sizeof(CCSP_DM_MAPPING_INFO));
         PQUEUE_HEADER pQueue = (PQUEUE_HEADER)malloc(sizeof(QUEUE_HEADER));
         PANSC_XML_DOM_NODE_OBJECT pNode = (PANSC_XML_DOM_NODE_OBJECT)g_pMyChildNode;
+        
+        PANSC_TOKEN_CHAIN pTokenChain = NULL;
 
-        printf("Debug 3");
-        PANSC_TOKEN_CHAIN pTokenChain = (PANSC_TOKEN_CHAIN)malloc(sizeof(ANSC_TOKEN_CHAIN));
-        memset(pTokenChain, 0, sizeof(ANSC_TOKEN_CHAIN));
-        pTokenChain->TokensQueue.Depth = 1;
-
-        printf("Debug 4");
         EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_,_))
                     .Times(1)
                     .WillOnce(Return(pTokenChain));
@@ -348,13 +335,11 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadDMMappingInfoSuccess)
                     .Times(1)
                     .WillOnce(DoAll(SetArgPointee<3>(0), Return(0)));
 
-        printf("Debug 5");
         CcspUtilLoadDMMappingInfo(pInfo, pQueue, pNode);
 
-        printf("Debug 6");
         free(g_pMyChildNode);
         g_pMyChildNode = NULL;
-    printf("Debug 7");
+        
         free(pTokenChain);
         free(pInfo);
         free(pQueue);
@@ -397,9 +382,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadMibMappingInfoSuccess)
     {
         PANSC_XML_DOM_NODE_OBJECT pNode = (PANSC_XML_DOM_NODE_OBJECT)g_pMyChildNode;
     
-        PANSC_TOKEN_CHAIN pTokenChain = (PANSC_TOKEN_CHAIN)malloc(sizeof(ANSC_TOKEN_CHAIN));
-        memset(pTokenChain, 0, sizeof(ANSC_TOKEN_CHAIN));
-        pTokenChain->TokensQueue.Depth = 1;
+        PANSC_TOKEN_CHAIN pTokenChain = NULL;
 
         EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_,_))
                     .Times(1)

@@ -227,9 +227,9 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilParseOidValueStringFailure)
     EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_,_))
                 .Times(1)
                 .WillOnce(Return(pTokenChain));
-    /*EXPECT_CALL(*g_anscWrapperApiMock, AnscTcPopToken(_))
+    EXPECT_CALL(*g_anscWrapperApiMock, AnscTcPopToken(_))
                 .Times(1)
-                .WillOnce(Return(static_cast<ANSC_HANDLE>(nullptr)));*/
+                .WillOnce(Return(static_cast<ANSC_HANDLE>(nullptr)));
     
     // Call the actual function
     BOOL result = CcspUtilParseOidValueString(oidString, oidArray, &size);
@@ -326,10 +326,6 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilLoadDMMappingInfoSuccess)
         PANSC_XML_DOM_NODE_OBJECT pNode = (PANSC_XML_DOM_NODE_OBJECT)g_pMyChildNode;
         
         PANSC_TOKEN_CHAIN pTokenChain = NULL;
-
-        PANSC_TOKEN_CHAIN pTokenChain = NULL;
-        //memset(pTokenChain, 0, sizeof(ANSC_TOKEN_CHAIN));
-        //pTokenChain->TokensQueue.Depth = 1;
 
         EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_,_))
                     .Times(1)

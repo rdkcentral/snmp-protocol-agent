@@ -936,7 +936,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspTableHelperSetMibValuesModeR2AsnOctStrSuccess)
     EXPECT_CALL(*g_netsnmpMock, netsnmp_tdata_extract_table(_))
                 .Times(1)
                 .WillOnce(Return(table_data));
-    3EXPECT_CALL(*g_netsnmpMock, netsnmp_tdata_create_row())
+    EXPECT_CALL(*g_netsnmpMock, netsnmp_tdata_create_row())
                 .Times(1)
                 .WillOnce(Return(row));
     EXPECT_CALL(*g_netsnmpMock, snmp_varlist_add_variable(_,_,_,_,_,_))

@@ -213,6 +213,7 @@ static int getNumAPs( ) {
      }
 
     printf("%s: DML command %s \n", __FUNCTION__, name);
+    printf("%s: Test coverity");
     if (!Cosa_GetParamValues(dstComp, dstPath, &name, 1, &nval, &valStr))
     {
         CcspTraceError(("%s: fail to get: %s\n", __FUNCTION__, name));

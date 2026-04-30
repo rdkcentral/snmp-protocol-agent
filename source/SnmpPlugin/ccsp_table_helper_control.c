@@ -550,7 +550,7 @@ CcspTableHelperRegisterMibHandler
     /* set column infor */
     table_info->min_column = pThisObject->uMinOid;
     table_info->max_column = pThisObject->uMaxOid;
-
+    netsnmp_tdata_register( reg, table_data, table_info);
     /* register MIB cache */
     mibHandler = netsnmp_cache_handler_get(NULL);
     if (mibHandler) 
@@ -575,7 +575,6 @@ CcspTableHelperRegisterMibHandler
             netsnmp_inject_handler( reg, mibHandler);
 
         AnscTraceInfo(("Register Cache handler for Table Mibs successfully.\n"));
-    }
-    netsnmp_tdata_register( reg, table_data, table_info  );
+    }    
 }
 

@@ -1818,8 +1818,6 @@ find_retry:
          if( netsnmp_tdata_add_row(table, row) != SNMPERR_SUCCESS )
          goto ret;
          }
-   if(row)
-   netsnmp_tdata_remove_and_delete_row(table, row);
    return status;        
 
 ret:

@@ -151,7 +151,7 @@ BOOL Cosa_GetParamValues
 	)
 {
 	
-                CcspTraceInfo(("RDKB_SNMP : SNMP GET called for param '%s'\n",*pParamArray));     
+                CcspTraceDebug(("RDKB_SNMP : SNMP GET called for param '%s'\n",*pParamArray));
 		int							iStatus = 0;
 		iStatus = 
 			CcspBaseIf_getParameterValues
@@ -171,7 +171,7 @@ BOOL Cosa_GetParamValues
                 else
                 {
                    
-                CcspTraceInfo(("RDKB_SNMP : SNMP GET SUCCESS for param '%s'\n",*pParamArray));
+                CcspTraceDebug(("RDKB_SNMP : SNMP GET SUCCESS for param '%s'\n",*pParamArray));
                 }            
 		return iStatus == CCSP_SUCCESS;
 }

@@ -574,7 +574,7 @@ CcspTableHelperRegisterMibHandler
         if (mibHandler)
             netsnmp_inject_handler( reg, mibHandler);
 
-        AnscTraceInfo(("Register Cache handler for Table Mibs successfully.\n"));
+        CcspTraceDebug(("Register Cache handler for Table Mibs successfully.\n"));
     }    
 }
 

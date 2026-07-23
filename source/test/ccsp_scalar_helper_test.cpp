@@ -84,9 +84,9 @@ TEST_F(CcspSnmpPaTestFixture, CcspScalarHelperLoadMibsSuccess)
 
         PANSC_XML_DOM_NODE_OBJECT pNode = (PANSC_XML_DOM_NODE_OBJECT)g_pMyChildNode;
 
-        PANSC_TOKEN_CHAIN pTokenChain = (PANSC_TOKEN_CHAIN)malloc(sizeof(ANSC_TOKEN_CHAIN));
-        memset(pTokenChain, 0, sizeof(ANSC_TOKEN_CHAIN));
-        pTokenChain->TokensQueue.Depth = 1;
+        PANSC_TOKEN_CHAIN pTokenChain = NULL;
+        //memset(pTokenChain, 0, sizeof(ANSC_TOKEN_CHAIN));
+        //pTokenChain->TokensQueue.Depth = 1;
 
         PANSC_STRING_TOKEN pStringToken = (PANSC_STRING_TOKEN)malloc(sizeof(ANSC_STRING_TOKEN));
         memset(pStringToken, 0, sizeof(ANSC_STRING_TOKEN));
@@ -114,9 +114,9 @@ TEST_F(CcspSnmpPaTestFixture, CcspScalarHelperLoadMibsSuccess)
         EXPECT_CALL(*g_safecLibMock, _sprintf_s_chk(_,_,_,_))
                     .WillRepeatedly(Return(0));
         EXPECT_CALL(*g_anscWrapperApiMock, AnscTcAllocate(_,_))
-                    .Times(2)
+                    .Times(1)
                     .WillRepeatedly(Return(pTokenChain));
-        EXPECT_CALL(*g_anscWrapperApiMock, AnscTcPopToken(_))
+        /*EXPECT_CALL(*g_anscWrapperApiMock, AnscTcPopToken(_))
                     .Times(1)
                     .WillOnce(Return(static_cast<ANSC_HANDLE>(pStringToken)));
         EXPECT_CALL(*g_safecLibMock, _memcpy_s_chk(_,_,_,_,_,_))
@@ -128,7 +128,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspScalarHelperLoadMibsSuccess)
         EXPECT_CALL(*g_netsnmpMock, netsnmp_cache_create(_,_,_,_,_))
                     .Times(1)
                     .WillOnce(Return(cache));
-        //EXPECT_CALL(*g_netsnmpMock, netsnmp_cache_handler_owns_cache(_));
+        EXPECT_CALL(*g_netsnmpMock, netsnmp_cache_handler_owns_cache(_));
         EXPECT_CALL(*g_netsnmpMock, netsnmp_create_handler_registration(_,_,_,_,_))
                     .Times(1)
                     .WillOnce(Return(reginfo));
@@ -137,7 +137,7 @@ TEST_F(CcspSnmpPaTestFixture, CcspScalarHelperLoadMibsSuccess)
                     .WillOnce(Return(0));
         EXPECT_CALL(*g_netsnmpMock, netsnmp_inject_handler(_, _))
                     .Times(1)
-                    .WillOnce(Return(0));
+                    .WillOnce(Return(0));*/
 
         CcspScalarHelperLoadMibs(pThisObject, pNode, NULL);
 

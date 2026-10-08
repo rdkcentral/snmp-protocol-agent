@@ -34,11 +34,13 @@ snmp_subagent_gtest_bin_CPPFLAGS = -I$(PKG_CONFIG_SYSROOT_DIR)$(includedir)/gtes
                                    -I${top_srcdir}/source/custom \
                                    -I${top_srcdir}/source/include \
                                    -I${top_srcdir}/source/SnmpPlugin \
+                                   -I$(HOME)/usr/local/include/ccsp \
                                    -DUNIT_TEST_DOCKER_SUPPORT \
                                    -DFEATURE_RDKB_WAN_MANAGER
 
 snmp_subagent_gtest_bin_SOURCES = gtest_main.cpp \
                                   mocks/print_uptime.c \
+                                  mocks/ansc_queue_stubs.c \
                                   ${top_srcdir}/source/custom/ccsp_snmp_common.c \
                                   ${top_srcdir}/source/custom/rg_devmgmt_handler.c \
                                   ${top_srcdir}/source/SnmpPlugin/ccsp_mib_helper.c \

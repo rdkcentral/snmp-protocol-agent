@@ -206,6 +206,8 @@ verifyTypeAndValueInSetReserved1
 
 	if( ret != SNMP_ERR_NOERROR)
 	{
+		AnscTraceError(("SNMP SET rejected: ASN.1 type=%u expected=%lu length=%lu\n",
+			(unsigned int)pVb->type, nType, (unsigned long)pVb->val_len));
 		return ret;
 	}
 
@@ -215,6 +217,8 @@ verifyTypeAndValueInSetReserved1
 	}
 	else if( nType == ASN_INTEGER || (nType >= ASN_IPADDRESS && nType <= ASN_OPAQUE))
 	{
+		AnscTraceError(("SNMP SET length check: ASN.1 type=%lu received=%lu expected=%lu IPv4Expected=%u\n",
+			nType, (unsigned long)pVb->val_len, (unsigned long)sizeof(ULONG), 4U));
 		ret = netsnmp_check_vb_size(pVb, sizeof(ULONG));
 	}
 	else if( nType == ASN_COUNTER64)

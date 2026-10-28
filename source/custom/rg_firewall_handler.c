@@ -773,7 +773,8 @@ static int set_block_days(const char *dmName, char *octetStr)
                 } 
             }  
             else{
-                rc = strcat_s(preStr,sizeof(preStr), ",");
+                const char *pComma = ",";
+                rc = strcat_s(preStr,sizeof(preStr), pComma);
                 if(rc != EOK)
                  {
                        ERR_CHK(rc);
@@ -782,7 +783,8 @@ static int set_block_days(const char *dmName, char *octetStr)
                 /*Coverity Fix  CID: 135448: STRING_OVERFLOW */
                  if( ( strlen( preStr ) + strlen( blockDays[i].day )) < BUF_MAX_SIZE ) {
 
-                rc = strcat_s(preStr, sizeof(preStr),blockDays[i].day);
+                const char *pDay = blockDays[i].day;
+                rc = strcat_s(preStr, sizeof(preStr), pDay);
                 if(rc != EOK)
                  {
                        ERR_CHK(rc);
@@ -1902,7 +1904,8 @@ static int load_trusted_user_entry(netsnmp_tdata *table)
 
                     if(pEntry->start_ip[0] == 0) 
                     {
-                      rc = strcpy_s(pEntry->start_ip, sizeof(pEntry->start_ip),ip);
+                      char *pIp = ip;
+                      rc = strcpy_s(pEntry->start_ip, sizeof(pEntry->start_ip),pIp);
                       if(rc != EOK)
                       {
                           ERR_CHK(rc);

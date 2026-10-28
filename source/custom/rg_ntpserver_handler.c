@@ -189,6 +189,7 @@ static int LoadNtpServTable(netsnmp_tdata *table)
          if(rc < EOK)
          {
                 ERR_CHK(rc);
+                AnscFreeMemory(ntpServ);
                 goto errout;
           }
         if ((row = netsnmp_tdata_create_row()) == NULL)

@@ -1537,7 +1537,10 @@ static int setBssSecurityMode(PCCSP_TABLE_ENTRY pEntry, int mode)
                 }
                 break;
 		case 3:
-                rc = strcpy_s(modeStr,sizeof(modeStr), "WPA2-Personal");
+                {
+                const char *pWpa2Personal = "WPA2-Personal";
+                rc = strcpy_s(modeStr,sizeof(modeStr), pWpa2Personal);
+                }
                  if(rc != EOK)
                 {
                        ERR_CHK(rc);
@@ -3381,7 +3384,8 @@ int setNMode(PCCSP_TABLE_ENTRY entry, int val)
     }
 #if defined (_WIFI_AX_SUPPORT_)
     if (val & kAXMask) {
-      rc =   strcat_s(valStr.parameterValue,MAX_VAL_SET,"ax,");
+      const char *pAx = "ax,";
+      rc =   strcat_s(valStr.parameterValue,MAX_VAL_SET,pAx);
       if(rc != EOK)
              {
                   ERR_CHK(rc);

@@ -118,7 +118,8 @@ CcspTableHelperLoadMibs
 	}
 
 	/* copy the name */
-	rc =  strcpy_s(pThisObject->MibName,sizeof(pThisObject->MibName), buffer);
+	char *pBuffer = buffer;
+	rc =  strcpy_s(pThisObject->MibName,sizeof(pThisObject->MibName), pBuffer);
         if(rc != EOK)
         {
              ERR_CHK(rc);

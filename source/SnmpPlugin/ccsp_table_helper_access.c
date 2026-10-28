@@ -1225,7 +1225,8 @@ CcspTableHelperRefreshCache
 		{
 			if(pIndexMap->uMapType >= CCSP_MIB_MAP_TO_DM)
 			{
-				rc = strcpy_s(pTemp,sizeof(pTemp), pIndexMap->Mapping.DMMappingInfo.pDMName);
+				char *pDMName = pIndexMap->Mapping.DMMappingInfo.pDMName;
+				rc = strcpy_s(pTemp,sizeof(pTemp), pDMName);
                                 if(rc != EOK)
                                 {
                                     ERR_CHK(rc);

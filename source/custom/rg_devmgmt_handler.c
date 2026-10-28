@@ -385,7 +385,8 @@ static int set_snmp_enable(const char *octet)
             }
             else
             {
-                rc = strcat_s(strval,sizeof(strval), ",");
+                const char *pComma = ",";
+                rc = strcat_s(strval,sizeof(strval), pComma);
                 if(rc != EOK)
                    {
                     ERR_CHK(rc);
@@ -807,7 +808,8 @@ getOid
             n += m;
         }
     }
-    rc = strcpy_s(retOidBuf, retBufSize, retVal);
+    char *pRetVal = retVal;
+    rc = strcpy_s(retOidBuf, retBufSize, pRetVal);
     if(rc != EOK)
     {
         ERR_CHK(rc);
@@ -831,7 +833,8 @@ getParamNameFromMapTable
         ERR_CHK(rc);
         if((!ind) && (rc == EOK))
         {
-            rc = strcpy_s(paramName, retBufSize, oidMapTable[i].paramName);
+            char *pParamName = oidMapTable[i].paramName;
+            rc = strcpy_s(paramName, retBufSize, pParamName);
             if(rc != EOK)
             {
                 ERR_CHK(rc);

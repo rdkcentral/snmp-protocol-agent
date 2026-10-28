@@ -627,7 +627,8 @@ CcspScalarHelperRefreshCache
 					{
 						if( _ansc_strstr(pMibMap->Mapping.pDMName, "%d") != NULL)
 						{
-						rc =	strcpy_s(pTemp,sizeof(pTemp), pMibMap->Mapping.pDMName);
+						char *pDMName = pMibMap->Mapping.pDMName;
+						rc =	strcpy_s(pTemp,sizeof(pTemp), pDMName);
                                                             if(rc != EOK)
                                                            {
                                                                 ERR_CHK(rc);

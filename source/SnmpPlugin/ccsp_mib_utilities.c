@@ -1001,7 +1001,8 @@ CcspUtilLoadMibInfo
 
 	/* check the MIB data type limitations */
 	checkMibDataType(buffer, pInfo, pQueue);
-        rc = strcpy_s(pInfo->pType,sizeof(pInfo->pType), buffer);
+        char *pBuffer = buffer;
+        rc = strcpy_s(pInfo->pType,sizeof(pInfo->pType), pBuffer);
         if(rc != EOK)
          {
               ERR_CHK(rc);
@@ -1605,7 +1606,8 @@ CcspUtilTraceOid
 	char*							pTemp       = buffer;
         int buf_len = sizeof(buffer);
         errno_t    rc = -1;
-	rc = strcpy_s(buffer,(unsigned int)buf_len, "Oid:[");
+	const char *pPrefix = "Oid:[";
+	rc = strcpy_s(buffer,(unsigned int)buf_len, pPrefix);
          if(rc != EOK)
          {
             ERR_CHK(rc);
@@ -2098,11 +2100,11 @@ CcspUtilDMFilterToNamespace
               }
         }
 	/* remove the spaces at the end */
-	pStr = _ansc_strstr(pValue, " ");
+	char* pValueSpace = _ansc_strstr(pValue, " ");
 
-	if( pStr != NULL)
+	if( pValueSpace != NULL)
 	{
-		pValue[(ULONG)(pStr - pValue)] = '0';
+		pValue[(ULONG)(pValueSpace - pValue)] = '0';
 	}
 
 	/* check all the instances and find the first one with the type and value */
@@ -2123,7 +2125,12 @@ CcspUtilDMFilterToNamespace
 
 		pReqName = AnscCloneString(pName1);
 
-		Cosa_GetParamValues(*ppDestName, *ppDestPath, &pReqName, 1, &size, &paramValues);
+		if( !Cosa_GetParamValues(*ppDestName, *ppDestPath, &pReqName, 1, &size, &paramValues))
+		{
+			CcspTraceError(("%s: fail to get: %s\n", __FUNCTION__, pReqName));
+			AnscFreeMemory(pReqName);
+			continue;
+		}
 
 		if( size != 1)
 		{
@@ -2790,7 +2797,8 @@ utilBitsToDMString
 				{
 					if( pBuffer[0] != 0x00)
 					{
-						rc = strcat_s(pBuffer,MAX_BUFF_SIZE, ",");
+						const char *pComma = ",";
+						rc = strcat_s(pBuffer,MAX_BUFF_SIZE, pComma);
                                                 if(rc != EOK)
 		                                {
 			                          ERR_CHK(rc);
@@ -2799,7 +2807,8 @@ utilBitsToDMString
 					}
 
                                          /* Coverity Fix CID: 135516: STRING_OVERFLOW */
-                                         if( ( strlen(pBuffer) + strlen(pStrMap->pString) ) < MAX_BUFF_SIZE) {
+                                         if( pStrMap->pString != NULL &&
+                                             ( strlen(pBuffer) + strlen(pStrMap->pString) ) < MAX_BUFF_SIZE) {
                                            rc = strcat_s(pBuffer,MAX_BUFF_SIZE, pStrMap->pString);
                                            if(rc != EOK)
                                           {
@@ -3447,7 +3456,8 @@ CcspUtilCreateCosaEntry
 
 		if( i == 0)
 		{
-	           rc =	strcpy_s(pTmp,(unsigned int)pTmplen, pIndexMap->Mapping.IndexMappingInfo.pTableObj);
+	           char *pTableObj = pIndexMap->Mapping.IndexMappingInfo.pTableObj;
+	           rc =	strcpy_s(pTmp,(unsigned int)pTmplen, pTableObj);
                    if(rc != EOK)
                    {
 	              ERR_CHK(rc);

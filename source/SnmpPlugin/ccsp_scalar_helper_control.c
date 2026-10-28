@@ -117,7 +117,8 @@ CcspScalarHelperLoadMibs
 	}
 
 	/* copy the name */
-	rc = strcpy_s(pThisObject->MibName,sizeof(pThisObject->MibName), buffer);
+	char *pBuffer = buffer;
+	rc = strcpy_s(pThisObject->MibName,sizeof(pThisObject->MibName), pBuffer);
         if(rc != EOK)
         {
                ERR_CHK(rc);
@@ -370,7 +371,8 @@ CcspScalarHelperRegisterMibHandler
 	/* register MIB handler */
     AnscTraceWarning(("Register scalar mib group '%s'\n", pThisObject->MibName));
     CcspUtilTraceOid(pThisObject->BaseOid, pThisObject->uOidLen);
-    rc =  memcpy_s(oidReg,sizeof(oidReg), pThisObject->BaseOid, pThisObject->uOidLen * sizeof(oid));
+    oid *pBaseOid = pThisObject->BaseOid;
+    rc =  memcpy_s(oidReg,sizeof(oidReg), pBaseOid, pThisObject->uOidLen * sizeof(oid));
     if(rc != EOK)
     {
         ERR_CHK(rc);

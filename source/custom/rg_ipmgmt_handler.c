@@ -197,7 +197,10 @@ static void getInterface(PCCSP_TABLE_ENTRY entry, char* interface ){
    
 
 ERR:
-    rc = strcpy_s(interface,MAX_VAL, "Unknow");
+    {
+    const char *pUnknown = "Unknow";
+    rc = strcpy_s(interface,MAX_VAL, pUnknown);
+    }
     ERR_CHK(rc);
             
     return;

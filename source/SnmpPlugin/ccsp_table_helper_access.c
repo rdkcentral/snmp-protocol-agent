@@ -213,7 +213,11 @@ verifyTypeAndValueInSetReserved1
 	{
 		ret = netsnmp_check_vb_size(pVb, sizeof(BOOLEAN));
 	}
-	else if( nType == ASN_INTEGER || (nType >= ASN_IPADDRESS && nType <= ASN_OPAQUE))
+	else if( nType == ASN_IPADDRESS)
+	{
+		ret = netsnmp_check_vb_size(pVb, CCSP_MIB_IPV4_ADDRESS_SIZE);
+	}
+	else if( nType == ASN_INTEGER || (nType > ASN_IPADDRESS && nType <= ASN_OPAQUE))
 	{
 		ret = netsnmp_check_vb_size(pVb, sizeof(ULONG));
 	}

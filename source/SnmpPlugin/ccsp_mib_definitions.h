@@ -82,6 +82,7 @@
 #define  MAXI_DM_NAME_LENGTH				    256
 #define  MAXI_CCSP_MAP_STRING_LEN               32
 #define  MAXI_MIB_DATA_TYPE_LEN                 32
+#define  CCSP_MIB_IPV4_ADDRESS_SIZE             4
 
 /* TR69 data type definition 
  */

@@ -551,7 +551,14 @@ CcspTableHelperRegisterMibHandler
     /* set column infor */
     table_info->min_column = pThisObject->uMinOid;
     table_info->max_column = pThisObject->uMaxOid;
-    netsnmp_tdata_register( reg, table_data, table_info);
+    if( netsnmp_tdata_register( reg, table_data, table_info) != SNMPERR_SUCCESS)
+    {
+        /* netsnmp_tdata_register frees 'reg' on failure, so it must not be used afterwards */
+        AnscTraceError(("Failed to register tdata for table mib '%s'.\n", pThisObject->MibName));
+
+        return;
+    }
+
     /* register MIB cache */
     mibHandler = netsnmp_cache_handler_get(NULL);
     if (mibHandler) 

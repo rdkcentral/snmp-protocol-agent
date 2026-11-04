@@ -1734,7 +1734,11 @@ CcspUtilInitMibValueArray
                                     pMibValue->uSize = 6;
 
                                 }
-				else if( pMibValue->uType >= ASN_IPADDRESS && pMibValue->uType <= ASN_OPAQUE)
+				else if( pMibValue->uType == ASN_IPADDRESS)
+				{
+					pMibValue->uSize = CCSP_MIB_IPV4_ADDRESS_SIZE;
+				}
+				else if( pMibValue->uType > ASN_IPADDRESS && pMibValue->uType <= ASN_OPAQUE)
 				{
 					pMibValue->uSize = sizeof(ULONG);
 				}

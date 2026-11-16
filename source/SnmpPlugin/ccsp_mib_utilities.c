@@ -2797,7 +2797,9 @@ utilBitsToDMString
 			{
 				pStrMap = CcspUtilLookforEnumMapping(&pMibMapping->MapQueue, (uLength - i - 1) * 8 + j);
 
-				if( pStrMap != NULL)
+				/* Coverity Fix CID: 135516: STRING_OVERFLOW */
+				if( pStrMap != NULL && pStrMap->pString != NULL &&
+					( strlen(pBuffer) + strlen(pStrMap->pString) ) < MAX_BUFF_SIZE)
 				{
 					if( pBuffer[0] != 0x00)
 					{
@@ -2810,21 +2812,16 @@ utilBitsToDMString
 		                                }
 					}
 
-                                         /* Coverity Fix CID: 135516: STRING_OVERFLOW */
-                                         if( pStrMap->pString != NULL &&
-                                             ( strlen(pBuffer) + strlen(pStrMap->pString) ) < MAX_BUFF_SIZE) {
-                                           rc = strcat_s(pBuffer,MAX_BUFF_SIZE, pStrMap->pString);
-                                           if(rc != EOK)
-                                          {
-                                              ERR_CHK(rc);
-                                               return NULL;
-                                         }
-                                        }
-                                        else
-                                        {
-                                            AnscTraceError(("value assigned to Buffer  exceeds the  Max Buffer value \n"));          
-                                        }
-
+					rc = strcat_s(pBuffer,MAX_BUFF_SIZE, pStrMap->pString);
+					if(rc != EOK)
+					{
+						ERR_CHK(rc);
+						return NULL;
+					}
+				}
+				else if( pStrMap != NULL)
+				{
+					AnscTraceError(("value assigned to Buffer  exceeds the  Max Buffer value \n"));
 				}
 			}
 		}

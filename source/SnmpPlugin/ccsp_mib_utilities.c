@@ -2799,7 +2799,7 @@ utilBitsToDMString
 
 				/* Coverity Fix CID: 135516: STRING_OVERFLOW */
 				if( pStrMap != NULL && pStrMap->pString != NULL &&
-					( strlen(pBuffer) + strlen(pStrMap->pString) ) < MAX_BUFF_SIZE)
+					( strlen(pBuffer) + (pBuffer[0] != 0x00 ? 1 : 0) + strlen(pStrMap->pString) ) < MAX_BUFF_SIZE)
 				{
 					if( pBuffer[0] != 0x00)
 					{

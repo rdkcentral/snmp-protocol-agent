@@ -18,6 +18,7 @@
 */
 
 #include "snmp_mock.h"
+#include <string>
 
 extern "C" {
     #include "ccsp_mib_helper.h"
@@ -2032,6 +2033,115 @@ TEST_F(CcspSnmpPaTestFixture, CcspUtilMIBValueToDMAsnBitStrDepth1Success)
     free(var->val.bitstring);
     free(var);
 }
+
+TEST_F(CcspSnmpPaTestFixture, CcspUtilMIBValueToDMMappedBitsNullString)
+{
+    CCSP_INT_STRING_MAP entries[2] = {};
+    char label[] = "Valid";
+    entries[0].EnumCode = 0;
+    entries[0].pString = NULL;
+    entries[0].Linkage.Next = &entries[1].Linkage;
+    entries[1].EnumCode = 1;
+    entries[1].pString = label;
+
+    CCSP_MIB_MAPPING mapping = {};
+    mapping.MapQueue.Next.Next = &entries[0].Linkage;
+    mapping.MapQueue.Depth = 2;
+    mapping.MibInfo.uType = ASN_BIT_STR;
+
+    parameterValStruct_t result = {};
+    result.type = ccsp_string;
+    u_char bits[] = {0xC0};
+    netsnmp_variable_list var = {};
+    var.val.bitstring = bits;
+    var.val_len = sizeof(bits);
+
+    EXPECT_CALL(*g_safecLibMock, _strcasecmp_s_chk(_,_,_,_,_))
+        .WillOnce(DoAll(SetArgPointee<3>(1), Return(0)));
+    EXPECT_CALL(*g_safecLibMock, _strcat_s_chk(_,_,StrEq("Valid"),_))
+        .WillOnce(WithArgs<0, 1, 2>(Invoke(
+            [](char* dest, size_t capacity, const char* source) -> errno_t {
+                if (strlen(dest) + strlen(source) >= capacity) {
+                    ADD_FAILURE() << "Concatenation exceeds capacity";
+                    return -1;
+                }
+                strcat(dest, source);
+                return 0;
+            })));
+    EXPECT_CALL(*g_anscWrapperApiMock, AnscCloneString(StrEq("Valid")))
+        .WillOnce(Invoke([](const char* value) { return strdup(value); }));
+
+    EXPECT_TRUE(CcspUtilMIBValueToDM(&mapping, &result, &var));
+    EXPECT_STREQ("Valid", result.parameterValue);
+    free(result.parameterValue);
+}
+
+class CcspMappedBitsCapacityTest : public CcspSnmpPaTestFixture,
+                                 public WithParamInterface<size_t>
+{
+};
+
+TEST_P(CcspMappedBitsCapacityTest, CommaAndLabelCapacity)
+{
+    char firstLabel[] = "First";
+    const size_t firstLength = strlen(firstLabel);
+    const size_t combinedLength = GetParam();
+    std::string nextLabel(combinedLength - firstLength - 1, 'x');
+    const bool fits = combinedLength == 1023;
+    const std::string expected = fits
+        ? std::string(firstLabel) + "," + nextLabel
+        : std::string(firstLabel);
+
+    CCSP_INT_STRING_MAP entries[2] = {};
+    entries[0].EnumCode = 0;
+    entries[0].pString = firstLabel;
+    entries[0].Linkage.Next = &entries[1].Linkage;
+    entries[1].EnumCode = 1;
+    entries[1].pString = &nextLabel[0];
+
+    CCSP_MIB_MAPPING mapping = {};
+    mapping.MapQueue.Next.Next = &entries[0].Linkage;
+    mapping.MapQueue.Depth = 2;
+    mapping.MibInfo.uType = ASN_BIT_STR;
+
+    parameterValStruct_t result = {};
+    result.type = ccsp_string;
+    u_char bits[] = {0xC0};
+    netsnmp_variable_list var = {};
+    var.val.bitstring = bits;
+    var.val_len = sizeof(bits);
+
+    EXPECT_CALL(*g_safecLibMock, _strcasecmp_s_chk(_,_,_,_,_))
+        .WillOnce(DoAll(SetArgPointee<3>(1), Return(0)));
+    EXPECT_CALL(*g_safecLibMock, _strcat_s_chk(_,1024,_,_))
+        .Times(fits ? 3 : 1)
+        .WillRepeatedly(WithArgs<0, 1, 2>(Invoke(
+            [](char* dest, size_t capacity, const char* source) -> errno_t {
+                if (strlen(dest) + strlen(source) >= capacity) {
+                    ADD_FAILURE() << "Concatenation exceeds capacity";
+                    return -1;
+                }
+                strcat(dest, source);
+                return 0;
+            })));
+    EXPECT_CALL(*g_anscWrapperApiMock, AnscCloneString(StrEq(expected.c_str())))
+        .WillOnce(Invoke([](const char* value) { return strdup(value); }));
+
+    EXPECT_TRUE(CcspUtilMIBValueToDM(&mapping, &result, &var));
+    EXPECT_STREQ(expected.c_str(), result.parameterValue);
+    if (result.parameterValue != NULL) {
+        const std::string actual(result.parameterValue);
+        EXPECT_EQ(fits ? combinedLength : firstLength, actual.size());
+        EXPECT_FALSE(actual.empty());
+        if (!actual.empty()) {
+            EXPECT_NE(',', actual.back());
+        }
+    }
+    free(result.parameterValue);
+}
+
+INSTANTIATE_TEST_SUITE_P(MappedBits, CcspMappedBitsCapacityTest,
+                         Values(size_t(1023), size_t(1024)));
 
 //Test for CcspUtilCreateMibEntry - success
 TEST_F(CcspSnmpPaTestFixture, CcspUtilCreateMibEntrySuccess)

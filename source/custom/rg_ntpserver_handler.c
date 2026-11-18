@@ -163,8 +163,12 @@ static void CleanupTableRow(netsnmp_tdata *table)
 {
     netsnmp_tdata_row *row;
 
-	while ((row = netsnmp_tdata_row_first(table)) != NULL)
+    while ((row = netsnmp_tdata_row_first(table)) != NULL)
+    {
+        AnscFreeMemory(row->data);
+        row->data = NULL;
         netsnmp_tdata_remove_and_delete_row(table, row);
+    }
 }
 
 static int LoadNtpServTable(netsnmp_tdata *table)
@@ -189,6 +193,7 @@ static int LoadNtpServTable(netsnmp_tdata *table)
          if(rc < EOK)
          {
                 ERR_CHK(rc);
+                AnscFreeMemory(ntpServ);
                 goto errout;
           }
         if ((row = netsnmp_tdata_create_row()) == NULL)

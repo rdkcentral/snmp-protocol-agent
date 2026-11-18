@@ -2025,6 +2025,8 @@ CcspUtilDMFilterToNamespace
 {
 	char							pBuffer[256] = { 0 };
 	char*							pStr         = _ansc_strstr(pDMFilter, "%d");
+	char*							pStrEqual    = NULL;
+	char*							pStrSpace    = NULL;
 	char*							pTemp        = NULL;
 	ULONG							insNumber    = 0;
 	unsigned int*				    insArray     = NULL;
@@ -2064,9 +2066,9 @@ CcspUtilDMFilterToNamespace
 	}
 
 	/* seperate the name and value  of "Device.myTable.%d.test.myType = 1" */
-    pStr = _ansc_strstr(pDMFilter, "=");
+    pStrEqual = _ansc_strstr(pDMFilter, "=");
 
-	if ( !pStr)
+	if ( !pStrEqual)
     {
         return insNumber;
     }
@@ -2074,27 +2076,27 @@ CcspUtilDMFilterToNamespace
 	/* get name */
 	pTemp = _ansc_strstr(pDMFilter, " ");
 
-	if( pTemp != NULL && pTemp < pStr )
+	if( pTemp != NULL && pTemp < pStrEqual )
 	{
 		AnscCopyMemory(pName, pDMFilter, (ULONG)(pTemp-pDMFilter));
 	}
 	else
 	{
-		AnscCopyMemory(pName, pDMFilter, (ULONG)(pStr-pDMFilter));
+		AnscCopyMemory(pName, pDMFilter, (ULONG)(pStrEqual-pDMFilter));
 	}
 
 	/* get value */
-	pStr += 1;
+	pStrEqual += 1;
 
 	/* remove the spaces at the front */
-	while( pStr[0] == ' ')
+	while( pStrEqual[0] == ' ')
 	{
-		pStr ++;
+		pStrEqual ++;
 	}
 
-	if( pStr[0] != '0')
+	if( pStrEqual[0] != '0')
         {
-            rc = strcpy_s(pValue,sizeof(pValue), pStr);
+            rc = strcpy_s(pValue,sizeof(pValue), pStrEqual);
             if(rc != EOK)
              {
 	          ERR_CHK(rc);
@@ -2102,11 +2104,11 @@ CcspUtilDMFilterToNamespace
               }
         }
 	/* remove the spaces at the end */
-	pStr = _ansc_strstr(pValue, " ");
+	pStrSpace = _ansc_strstr(pValue, " ");
 
-	if( pStr != NULL)
+	if( pStrSpace != NULL)
 	{
-		pValue[(ULONG)(pStr - pValue)] = '0';
+		pValue[(ULONG)(pStrSpace - pValue)] = '0';
 	}
 
 	/* check all the instances and find the first one with the type and value */
@@ -2127,7 +2129,12 @@ CcspUtilDMFilterToNamespace
 
 		pReqName = AnscCloneString(pName1);
 
-		Cosa_GetParamValues(*ppDestName, *ppDestPath, &pReqName, 1, &size, &paramValues);
+		if( !Cosa_GetParamValues(*ppDestName, *ppDestPath, &pReqName, 1, &size, &paramValues))
+		{
+			AnscTraceWarning(("Cosa_GetParamValues of '%s' failed.\n", pReqName));
+			AnscFreeMemory(pReqName);
+			continue;
+		}
 
 		if( size != 1)
 		{
@@ -2803,7 +2810,7 @@ utilBitsToDMString
 					}
 
                                          /* Coverity Fix CID: 135516: STRING_OVERFLOW */
-                                         if( ( strlen(pBuffer) + strlen(pStrMap->pString) ) < MAX_BUFF_SIZE) {
+                                         if( pStrMap->pString != NULL && ( strlen(pBuffer) + strlen(pStrMap->pString) ) < MAX_BUFF_SIZE) {
                                            rc = strcat_s(pBuffer,MAX_BUFF_SIZE, pStrMap->pString);
                                            if(rc != EOK)
                                           {
